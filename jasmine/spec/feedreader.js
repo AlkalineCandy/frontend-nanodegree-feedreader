@@ -79,18 +79,16 @@ $(function () {
 
 
         it("changes visibility", function () {
-            let icon = document.querySelector(".menu-icon-link");
 
-            icon.addEventListener("click", function () {
-                if (!menuHidden()) {
-                    expect(menuHidden()).toBe();
-                } else {
-                    expect(menuHidden()).toBe(false);
-                }
+            // my mentor helped me with this bit, that's why it's suddenly jQuery
 
+            let menuIcon = $('.menu-icon-link');
+            menuIcon.click();
+            expect($('body').hasClass('menu-hidden')).toBe(false);
+            menuIcon.click();
+            expect($('body').hasClass('menu-hidden')).toBe(true);
             });
 
-        });
 
     });
 
@@ -131,6 +129,25 @@ $(function () {
          * by the loadFeed function that the content actually changes.
          * Remember, loadFeed() is asynchronous.
          */
+
+        let oldFeed,
+            newFeed;
+
+        beforeEach(function (done) {
+            loadFeed(0, function () {
+                oldFeed = document.querySelector('.feed').innerHTML;
+
+                loadFeed(1, function () {
+                    newFeed = document.querySelector('.feed').innerHTML;
+                    done();
+
+                });
+            });
+        });
+
+        it('changes content when new feed loads', function () {
+            expect(oldFeed).not.toBe(newFeed);
+        });
 
     });
 
